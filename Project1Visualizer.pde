@@ -5,7 +5,7 @@ SceneWin sceneWin;
 
 float dt = 0;
 float prevTime = 0;
-
+final float gravity = 1000;
 
 
 
@@ -23,7 +23,7 @@ void draw() {
   if (sceneTitle != null) {
     sceneTitle.update();
   } else if (scenePlay != null) {
-    scenePlay.update();
+    scenePlay.draw();
   } else if (sceneWin != null) {
     sceneWin.update();
   } else if (sceneHowTo != null) {
