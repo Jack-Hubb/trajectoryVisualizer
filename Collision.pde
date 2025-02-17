@@ -2,7 +2,7 @@
 class AABB {
   private boolean colliding = false;
 
-  private float xmin, xmax, ymin, ymax;
+  protected float xmin, xmax, ymin, ymax;
 
   //resets colliding boolean
   public void resetColliding() {
@@ -27,6 +27,15 @@ class AABB {
     colliding = true;
     aabb.colliding = true;
     return true;
+  }
+  
+  public boolean checkCollisionMouse(){
+  if(mouseX > xmax)return false;
+  if(mouseX < xmin)return false;
+  if(mouseY > ymax)return false;
+  if(mouseY < ymin)return false;
+  colliding = true;
+  return true;
   }
 }
 

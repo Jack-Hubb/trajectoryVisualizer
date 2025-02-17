@@ -6,7 +6,7 @@ static public class Keyboard {
   public static final int ONE = 49;
   public static final int TWO = 50;
   public static final int THREE = 51;
-
+ public static final int  SPACE = ' ';
 
 
   public static void update() {

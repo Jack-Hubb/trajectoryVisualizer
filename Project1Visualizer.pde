@@ -11,7 +11,7 @@ final float gravity = 1000;
 
 void setup() {
   size(1280, 720);
-  switchToPlay();
+  switchToTitle();
 }
 
 
@@ -20,15 +20,16 @@ void draw() {
   calcDeltaTime();
 
 
-  if (sceneTitle != null) {
-    sceneTitle.update();
-  } else if (scenePlay != null) {
+  if (scenePlay != null) {
     scenePlay.draw();
   } else if (sceneWin != null) {
     sceneWin.update();
   } else if (sceneHowTo != null) {
-    //may change to draw since its displaying only a message
     sceneHowTo.update();
+   if (sceneHowTo != null) sceneHowTo.draw();
+  } else if (sceneTitle != null) {
+    sceneTitle.update();
+    if (sceneTitle != null) sceneTitle.draw();
   }
 }
 
@@ -48,25 +49,32 @@ void keyReleased() {
   Keyboard.handleKeyUp(keyCode);
 }
 
-void switchToTitle() {
+void mousePressed() {
+  if (mouseButton == LEFT) Mouse.handleKeyDown(Mouse.LEFT);
+}
+
+void mouseReleased() {
+  if (mouseButton == LEFT) Mouse.handleKeyUp(Mouse.LEFT);
+}
+public void switchToTitle() {
   sceneTitle = new SceneTitle();
   scenePlay = null;
   sceneWin = null;
   sceneHowTo = null;
 }
-void switchToPlay() {
+public void switchToPlay() {
   scenePlay = new ScenePlay();
   sceneTitle = null;
   sceneWin = null;
   sceneHowTo = null;
 }
-void switchToHowTo() {
+public void switchToHowTo() {
   sceneHowTo = new SceneHowTo();
-  scenePlay = null;
   sceneTitle = null;
+  scenePlay = null;
   sceneWin = null;
 }
-void switchToWin() {
+public void switchToWin() {
   sceneWin = new SceneWin();
   sceneHowTo = null;
   scenePlay = null;
