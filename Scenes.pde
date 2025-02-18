@@ -36,25 +36,78 @@ class SceneTitle {
 
 
 class ScenePlay {
-  Projectile projectile = new Projectile();
+
+  Button rubberSpawn = new Button(100, height-110, 100, 50);
+  Button paperSpawn = new Button(205, height-110, 100, 50);
+  Button metalSpawn = new Button(100, height-50, 100, 50);
+  Button woodSpawn = new Button(205, height-50, 100, 50);
+
+
+  Projectile projectile = new Projectile("RUBBER");
 
   void setup() {
     size(1280, 720);
     background(#FFFFFF);
+    //generate tower materials
   }
 
   void update() {
+    rubberSpawn.update();
+    paperSpawn.update();
+    metalSpawn.update();
+    woodSpawn.update();
 
-    projectile.update();
+//projectile spawning
+if(rubberSpawn.activated){
+//spawn corisponding projectile
+println("rubber");
+} else if(paperSpawn.activated){
+//spawn corisponding projectile
+println("paper");
+} else if(metalSpawn.activated){
+//spawn corisponding projectile
+println("metal");
+} else if(woodSpawn.activated){
+//spawn corisponding projectile
+println("wood");
+}
+
+
+    if (projectile != null) {
+      projectile.update();
+      if (projectile.bounceAmount <= 0) projectile = null;
+    }
+
+    // buttons for spawning projectiles
   }
-
   void draw() {
+
+
     background(#FFFFFF);
     update();
 
-    projectile.draw();
+    fill(40);
+    rect(-50, height - 150, width+50, 500);
+    if (projectile != null)projectile.draw();
+
+    rubberSpawn.draw();
+    metalSpawn.draw();
+    woodSpawn.draw();
+    paperSpawn.draw();
+    fill(0);
+    text("Rubber", 100, height-110);
+    text("Metal", 100, height-50);
+    text("Wood", 205, height-50);
+    text("Paper", 205, height-110);
   }
 }
+
+
+
+
+
+
+
 
 class SceneHowTo {
 
@@ -76,8 +129,8 @@ class SceneHowTo {
     rect(-50, height - 150, width+50, 500);
     playButton.draw();
     toMenuButton.draw();
-   
-    
+
+
     fill(0);
     textSize(45);
     textAlign(CENTER, CENTER);
