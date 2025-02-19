@@ -170,7 +170,6 @@ class Polygon {
 
   boolean checkCollision(Polygon poly) {
     if (aabb.checkCollision(poly.aabb)) {
-
       ArrayList<PVector> axes = new ArrayList<>();
 
       for (PVector normal : normals) {
@@ -194,6 +193,25 @@ class Polygon {
     }
     return false;
   }
+  
+  
+ boolean checkCollisionPoint(PVector pt) {
+
+  int n = pointsTransformed.length;
+  //gets current and next point
+  for (int i = 0, j = n - 1; i < n; j = i++) {
+    PVector pi = pointsTransformed[i];
+    PVector pj = pointsTransformed[j];
+//checks for seperation from the point provided
+    if (((pi.y > pt.y) != (pj.y > pt.y)) &&
+        (pt.x < (pj.x - pi.x) * (pt.y - pi.y) / (pj.y - pi.y) + pi.x)) {
+  return true;
+    }
+  }
+  
+  return false;
+}
+
   
   
 }

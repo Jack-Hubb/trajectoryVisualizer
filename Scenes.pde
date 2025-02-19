@@ -75,7 +75,7 @@ println("wood");
 
     if (projectile != null) {
       projectile.update();
-      if (projectile.bounceAmount <= 0) projectile = null;
+      //if (projectile.bounceAmount <= 0) projectile = null;
     }
 
     // buttons for spawning projectiles
