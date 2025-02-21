@@ -41,9 +41,11 @@ class ScenePlay {
   Button paperSpawn = new Button(205, height-110, 100, 50);
   Button metalSpawn = new Button(100, height-50, 100, 50);
   Button woodSpawn = new Button(205, height-50, 100, 50);
+  boolean buttonClickable;
+  float buttonCD;
 
+  ArrayList<Projectile> projectiles = new ArrayList();
 
-  Projectile projectile = new Projectile("RUBBER");
 
   void setup() {
     size(1280, 720);
@@ -56,26 +58,43 @@ class ScenePlay {
     paperSpawn.update();
     metalSpawn.update();
     woodSpawn.update();
+    buttonCD -= dt;
 
-//projectile spawning
-if(rubberSpawn.activated){
-//spawn corisponding projectile
-println("rubber");
-} else if(paperSpawn.activated){
-//spawn corisponding projectile
-println("paper");
-} else if(metalSpawn.activated){
-//spawn corisponding projectile
-println("metal");
-} else if(woodSpawn.activated){
-//spawn corisponding projectile
-println("wood");
-}
+    if (buttonCD >= 0) {
+      buttonClickable = false;
+    } else {
+      buttonClickable = true;
+    }
 
+    if (buttonClickable) {
+      //projectile spawning
+      if (rubberSpawn.activated) {
+        //spawn corisponding projectile
+        Projectile p = new Projectile(200, height-175, "RUBBER");
+        projectiles.add(p);
+        buttonCD = 3;
+        println("rubber");
+      } else if (paperSpawn.activated) {
+        //spawn corisponding projectile
+        Projectile p = new Projectile(200, height-175, "PAPER");
+        projectiles.add(p);
+        println("paper");
+      } else if (metalSpawn.activated) {
+        //spawn corisponding projectile
+        Projectile p = new Projectile(200, height-175, "METAL");
+        projectiles.add(p);
+        println("metal");
+      } else if (woodSpawn.activated) {
+        //spawn corisponding projectile
+        Projectile p = new Projectile(200, height-175, "WOOD");
+        projectiles.add(p);
+        println("wood");
+      }
+    }
 
-    if (projectile != null) {
-      projectile.update();
-      //if (projectile.bounceAmount <= 0) projectile = null;
+    for (int i = 0; i < projectiles.size(); i++) {
+      Projectile p = projectiles.get(i);
+      p.update();
     }
 
     // buttons for spawning projectiles
@@ -88,7 +107,11 @@ println("wood");
 
     fill(40);
     rect(-50, height - 150, width+50, 500);
-    if (projectile != null)projectile.draw();
+    //if (projectile != null)projectile.draw();
+    for (int i = 0; i < projectiles.size(); i++) {
+      Projectile p = projectiles.get(i);
+      p.draw();
+    }
 
     rubberSpawn.draw();
     metalSpawn.draw();

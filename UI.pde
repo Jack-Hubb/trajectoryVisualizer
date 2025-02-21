@@ -6,6 +6,8 @@ class Button extends AABB {
   boolean isHovered;
   boolean activated;
   float buttonCD;
+  boolean PLeftPressed;
+
 
   Button(float X, float Y, float W, float H) {
 
@@ -20,8 +22,10 @@ class Button extends AABB {
   }
 
   void update() {
+    PLeftPressed = Mouse.onDown(Mouse.LEFT);
     buttonCD -= millis()/1000;
-    if (buttonCD <= 0)activated = false;
+   
+    activated = false;
     if (checkCollisionMouse()) {
       isHovered = true;
     } else isHovered =false;
@@ -31,6 +35,7 @@ class Button extends AABB {
     if (isHovered && Mouse.onDown(Mouse.LEFT)) {
       activated = true;
       buttonCD = 3;
+     
     }
   }
 
