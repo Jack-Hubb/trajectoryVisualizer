@@ -1,3 +1,113 @@
+
+class ScenePlay {
+
+  Button rubberSpawn = new Button(100, height-110, 100, 50);
+  Button paperSpawn = new Button(205, height-110, 100, 50);
+  Button metalSpawn = new Button(100, height-50, 100, 50);
+  Button woodSpawn = new Button(205, height-50, 100, 50);
+  boolean buttonClickable;
+  float buttonCD;
+  SlingShot slingShot;
+  ArrayList<Projectile> projectiles = new ArrayList();
+
+
+  ScenePlay() {
+    size(1280, 720);
+    background(#FFFFFF);
+    //generate tower materials
+    slingShot = new SlingShot(200, height-300);
+  }
+
+  void update() {
+    rubberSpawn.update();
+    paperSpawn.update();
+    metalSpawn.update();
+    woodSpawn.update();
+    if (slingShot != null)slingShot.update();
+    buttonCD -= dt;
+
+    if (buttonCD >= 0) {
+      buttonClickable = false;
+    } else {
+      buttonClickable = true;
+    }
+    // buttons for spawning projectiles
+    if (buttonClickable) {
+      //projectile spawning
+      if (rubberSpawn.activated) {
+        //spawn corisponding projectile
+        Projectile p = new Projectile(100, height-300, "RUBBER");
+        projectiles.add(p);
+        buttonCD = 3;
+        println("rubber");
+      } else if (paperSpawn.activated) {
+        //spawn corisponding projectile
+        Projectile p = new Projectile(100, height-300, "PAPER");
+        projectiles.add(p);
+        println("paper");
+      } else if (metalSpawn.activated) {
+        //spawn corisponding projectile
+        Projectile p = new Projectile(100, height-300, "METAL");
+        projectiles.add(p);
+        println("metal");
+      } else if (woodSpawn.activated) {
+        //spawn corisponding projectile
+        Projectile p = new Projectile(100, height-300, "WOOD");
+        projectiles.add(p);
+        println("wood");
+      }
+    }
+
+    for (int i = 0; i < projectiles.size(); i++) {
+      Projectile p = projectiles.get(i);
+      p.update();
+    }
+
+
+    for (int i = 0; i < projectiles.size(); i++) {
+      Projectile p = projectiles.get(i);
+      if (p.lookingForCatapult) {
+
+        if (p.checkCollision(slingShot)) {
+          p.inCatapult = true;
+        }
+        p.lookingForCatapult = false;
+      }
+    }
+  }
+  void draw() {
+
+
+    background(#FFFFFF);
+    update();
+
+    for (int i = 0; i < projectiles.size(); i++) {
+      Projectile p = projectiles.get(i);
+      p.draw();
+    }
+
+    fill(40);
+    rect(-50, height - 150, width+50, 500);
+    //if (projectile != null)projectile.draw();
+
+
+    rubberSpawn.draw();
+    metalSpawn.draw();
+    woodSpawn.draw();
+    paperSpawn.draw();
+    if (slingShot != null)slingShot.draw();
+    fill(0);
+    text("Rubber", 100, height-110);
+    text("Metal", 100, height-50);
+    text("Wood", 205, height-50);
+    text("Paper", 205, height-110);
+  }
+}
+
+
+
+
+
 class SceneTitle {
 
   Button playButton = new Button(width/2, height/2-95, 250, 80);
@@ -31,101 +141,6 @@ class SceneTitle {
     textSize(25);
   }
 }
-
-
-
-
-class ScenePlay {
-
-  Button rubberSpawn = new Button(100, height-110, 100, 50);
-  Button paperSpawn = new Button(205, height-110, 100, 50);
-  Button metalSpawn = new Button(100, height-50, 100, 50);
-  Button woodSpawn = new Button(205, height-50, 100, 50);
-  boolean buttonClickable;
-  float buttonCD;
-
-  ArrayList<Projectile> projectiles = new ArrayList();
-
-
-  void setup() {
-    size(1280, 720);
-    background(#FFFFFF);
-    //generate tower materials
-  }
-
-  void update() {
-    rubberSpawn.update();
-    paperSpawn.update();
-    metalSpawn.update();
-    woodSpawn.update();
-    buttonCD -= dt;
-
-    if (buttonCD >= 0) {
-      buttonClickable = false;
-    } else {
-      buttonClickable = true;
-    }
-
-    if (buttonClickable) {
-      //projectile spawning
-      if (rubberSpawn.activated) {
-        //spawn corisponding projectile
-        Projectile p = new Projectile(200, height-175, "RUBBER");
-        projectiles.add(p);
-        buttonCD = 3;
-        println("rubber");
-      } else if (paperSpawn.activated) {
-        //spawn corisponding projectile
-        Projectile p = new Projectile(200, height-175, "PAPER");
-        projectiles.add(p);
-        println("paper");
-      } else if (metalSpawn.activated) {
-        //spawn corisponding projectile
-        Projectile p = new Projectile(200, height-175, "METAL");
-        projectiles.add(p);
-        println("metal");
-      } else if (woodSpawn.activated) {
-        //spawn corisponding projectile
-        Projectile p = new Projectile(200, height-175, "WOOD");
-        projectiles.add(p);
-        println("wood");
-      }
-    }
-
-    for (int i = 0; i < projectiles.size(); i++) {
-      Projectile p = projectiles.get(i);
-      p.update();
-    }
-
-    // buttons for spawning projectiles
-  }
-  void draw() {
-
-
-    background(#FFFFFF);
-    update();
-
-    fill(40);
-    rect(-50, height - 150, width+50, 500);
-    //if (projectile != null)projectile.draw();
-    for (int i = 0; i < projectiles.size(); i++) {
-      Projectile p = projectiles.get(i);
-      p.draw();
-    }
-
-    rubberSpawn.draw();
-    metalSpawn.draw();
-    woodSpawn.draw();
-    paperSpawn.draw();
-    fill(0);
-    text("Rubber", 100, height-110);
-    text("Metal", 100, height-50);
-    text("Wood", 205, height-50);
-    text("Paper", 205, height-110);
-  }
-}
-
-
 
 
 

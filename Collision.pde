@@ -39,7 +39,7 @@ class AABB {
   }
 }
 
-class Polygon {
+class Polygon extends AABB {
   private boolean colliding = false;
   private boolean doneChecking = false;
   private boolean dirty = true;
@@ -193,7 +193,7 @@ class Polygon {
     }
     return false;
   }
-  
+
   
  boolean checkCollisionPoint(PVector pt) {
 

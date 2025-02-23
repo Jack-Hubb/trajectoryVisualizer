@@ -7,10 +7,16 @@ class Projectile extends Polygon {
   // CHANGE ACCORDINGLY
   float bouncyness = 100;
   float bouncynessFalloff;
+  
+  boolean lookingForCatapult = true;
   boolean inCatapult;
   boolean isHolding = false;
+  boolean showTrajectoryLine = true;  // false by default
   boolean allowedToBeHeld = true;
+
+
   PVector velocity = new PVector();
+
   color fillColor;
 
   Projectile(float x, float y, String name ) {
@@ -21,6 +27,9 @@ class Projectile extends Polygon {
     recalc();
     this.x = x;
     this.y = y;
+    
+    velocity.x = 200;
+
     if (name == "RUBBER") {
       drag = 15;
       weight = .2;
@@ -55,10 +64,18 @@ class Projectile extends Polygon {
   void update() {
     super.update();
     pBounceAmount = bounceAmount;
-    velocity.y += gravity  * dt;
+
+    if (inCatapult) {
+      x = 100;
+      y = height - 200;
+      allowedToBeHeld = false;
+    } else if (!inCatapult) {
+      velocity.y += gravity  * dt;
+    }
 
     x += velocity.x * dt;
     y += velocity.y * dt;
+
     if (allowedToBeHeld) {
       if (Mouse.onDown(Mouse.LEFT)) {
         if (checkCollisionPoint(new PVector(mouseX, mouseY))) isHolding = true;
@@ -85,6 +102,54 @@ class Projectile extends Polygon {
     }
     setPosition( new PVector(x, y));
     fill(fillColor);
+  }
+
+  void draw() {
+    super.draw();
+    if (showTrajectoryLine) {
+      drawTrajectory(x, y, velocity, 5);
+    }
+  }
+}
+
+void drawTrajectory(float initX, float initY, PVector initVel, float dur) {
+  stroke(0);
+  noFill();
+  //start line
+  beginShape();
+  //time loop through duration of line drawn this case 5 seconds
+  for (float elapsedTime = 0; elapsedTime <= dur; elapsedTime += dt) {
+    float x = initX + initVel.x * elapsedTime;  // x using horizontal formula
+    float y = initY + initVel.y * elapsedTime + 0.5 * gravity * sq(elapsedTime) ; // y through vertical formula however the /2 in formula gave weird bugs so its been removed
+    vertex(x, y);
+  }
+  endShape();
+}
+
+
+class SlingShot extends Polygon {
+  PVector position = new PVector();
+  SlingShot(float x, float y) {
+    position.x = x;
+    position.y = y;
+
+    addPoint(10, 10);
+    addPoint(10, 20);
+    addPoint(20, 20);
+    addPoint(20, 10);
+    addPoint(10, 10);
+    setScale(8);
+    recalc();
+
+    setPosition(new PVector(x-50, y-100));
+  }
+
+  void update() {
+    super.update();
+  }
+
+  void draw() {
+    super.draw();
   }
 }
 // need to make velocity x and y influinced by drag and weight
