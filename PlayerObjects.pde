@@ -93,9 +93,11 @@ class Projectile extends Polygon {
       if (!mousePressed && isHolding) {
 
         distance = sqrt(sq(anchorY - y)+sq(anchorX - x));
-        launchScale = 5;
-        velocity.x = cos(launchAngle) * distance * launchScale ;
-        velocity.y = sin(launchAngle) * distance * launchScale;
+        launchScale = 4;
+
+
+        velocity.x = cos(launchAngle) *  distance * launchScale;
+        velocity.y = sin(launchAngle) *  distance * launchScale;
 
 
         inCatapult = false;
@@ -107,7 +109,7 @@ class Projectile extends Polygon {
       // When not in the catapult, apply gravity and regular physics
       velocity.y += gravity * dt;
       x += velocity.x * dt;
-           y += velocity.y * dt;
+      y += velocity.y * dt;
     }
 
     x += velocity.x * dt;
@@ -123,8 +125,6 @@ class Projectile extends Polygon {
       x = mouseX;
       y = mouseY;
     } else {
-
- 
     }
 
     if (y >= height-180) {
@@ -156,9 +156,7 @@ class Projectile extends Polygon {
   void calcAngleToCat() {
     float catX = 270;
     float catY = height - 280;
-    float dx = x - catX;
-    float dy = y - catY;
-    launchAngle = atan2(dx, dy);
+    launchAngle = atan2(mouseY - catY, mouseX - catX ) + PI;
   }
 }
 
@@ -175,6 +173,7 @@ void drawTrajectory(float initX, float initY, PVector initVel, float dur) {
   }
   endShape();
 }
+//pshape
 
 
 

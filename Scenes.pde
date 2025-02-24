@@ -50,16 +50,19 @@ class ScenePlay {
         //spawn corisponding projectile
         Projectile p = new Projectile(100, height-300, "PAPER");
         projectiles.add(p);
+        buttonCD = 3;
         println("paper");
       } else if (metalSpawn.activated) {
         //spawn corisponding projectile
         Projectile p = new Projectile(100, height-300, "METAL");
         projectiles.add(p);
+        buttonCD = 3;
         println("metal");
       } else if (woodSpawn.activated) {
         //spawn corisponding projectile
         Projectile p = new Projectile(100, height-300, "WOOD");
         projectiles.add(p);
+        buttonCD = 3;
         println("wood");
       }
     }
@@ -67,14 +70,12 @@ class ScenePlay {
 
     for (int i = 0; i < projectiles.size(); i++) {
       Projectile p = projectiles.get(i);
-     
 
-        if (p.checkCollision(slingShot) && !p.isFired) {
-          p.inCatapult = true;
-  
-        }
-        p.lookingForCatapult = false;
-      
+
+      if (p.checkCollision(slingShot) && !p.isFired) {
+        p.inCatapult = true;
+      }
+      p.lookingForCatapult = false;
     }
   }
   void draw() {
@@ -83,7 +84,7 @@ class ScenePlay {
     background(#FFFFFF);
     update();
 
-if (slingShot != null)slingShot.draw();
+    if (slingShot != null)slingShot.draw();
 
     for (int i = 0; i < projectiles.size(); i++) {
       Projectile p = projectiles.get(i);
@@ -99,13 +100,15 @@ if (slingShot != null)slingShot.draw();
     metalSpawn.draw();
     woodSpawn.draw();
     paperSpawn.draw();
-    
+
     fill(0);
     textSize(25);
     text("Rubber", 100, height-110);
     text("Metal", 100, height-50);
     text("Wood", 205, height-50);
     text("Paper", 205, height-110);
+    
+
   }
 }
 
@@ -181,16 +184,15 @@ class SceneHowTo {
     text("Back", 200, height-80);
     textSize(50);
     fill(255);
-    text("How to Play!",width/2,50);
+    text("How to Play!", width/2, 50);
     textSize(40);
-    ellipse(45,150,15,15);
-    ellipse(242,250,15,15);
-    ellipse(15,350,15,15);
-    text("Press one of the four buttons in the bottom right to spawn a projectile.",width/2,150);
-    text("Drag and drop the projectile into the slingshot.",width/2,250);
+    ellipse(45, 150, 15, 15);
+    ellipse(242, 250, 15, 15);
+    ellipse(15, 350, 15, 15);
+    text("Press one of the four buttons in the bottom right to spawn a projectile.", width/2, 150);
+    text("Drag and drop the projectile into the slingshot.", width/2, 250);
     textSize(39);
-    text("Drag the projectile to the left and launch the projectile to destroy the tower!",width/2,350);
-    
+    text("Drag the projectile to the left and launch the projectile to destroy the tower!", width/2, 350);
   }
 }
 
