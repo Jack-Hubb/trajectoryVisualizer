@@ -7,13 +7,16 @@ class Projectile extends Polygon {
   // CHANGE ACCORDINGLY
   float bouncyness = 100;
   float bouncynessFalloff;
-  
+  float launchAngle;
+  float distance;
+  float launchScale;
+
   boolean lookingForCatapult = true;
   boolean inCatapult;
   boolean isHolding = false;
   boolean showTrajectoryLine = true;  // false by default
   boolean allowedToBeHeld = true;
-
+  boolean isFired = false;
 
   PVector velocity = new PVector();
 
@@ -27,8 +30,8 @@ class Projectile extends Polygon {
     recalc();
     this.x = x;
     this.y = y;
-    
-    velocity.x = 200;
+
+    //velocity.x = 200;
 
     if (name == "RUBBER") {
       drag = 15;
@@ -64,17 +67,51 @@ class Projectile extends Polygon {
   void update() {
     super.update();
     pBounceAmount = bounceAmount;
+    calcAngleToCat();
+    println(launchAngle);
+
+    float anchorX = 270;
+    float anchorY = height - 280;
 
     if (inCatapult) {
-      x = 100;
-      y = height - 200;
-      allowedToBeHeld = false;
-    } else if (!inCatapult) {
-      velocity.y += gravity  * dt;
+
+      if (mousePressed && checkCollisionPoint(new PVector(mouseX, mouseY))) {
+        isHolding = true;
+        allowedToBeHeld = true;
+      }
+
+      if (isHolding) {
+        x = mouseX;
+        y = mouseY;
+      } else {
+
+        x = anchorX;
+        y = anchorY;
+      }
+
+
+      if (!mousePressed && isHolding) {
+
+        distance = sqrt(sq(anchorY - y)+sq(anchorX - x));
+        launchScale = 5;
+        velocity.x = cos(launchAngle) * distance * launchScale ;
+        velocity.y = sin(launchAngle) * distance * launchScale;
+
+
+        inCatapult = false;
+        isHolding = false;
+        allowedToBeHeld = false;
+        isFired = true;
+      }
+    } else {
+      // When not in the catapult, apply gravity and regular physics
+      velocity.y += gravity * dt;
+      x += velocity.x * dt;
+           y += velocity.y * dt;
     }
 
     x += velocity.x * dt;
-    y += velocity.y * dt;
+
 
     if (allowedToBeHeld) {
       if (Mouse.onDown(Mouse.LEFT)) {
@@ -85,6 +122,9 @@ class Projectile extends Polygon {
     if (isHolding) {
       x = mouseX;
       y = mouseY;
+    } else {
+
+ 
     }
 
     if (y >= height-180) {
@@ -106,9 +146,19 @@ class Projectile extends Polygon {
 
   void draw() {
     super.draw();
-    if (showTrajectoryLine) {
+    if (isFired) {
       drawTrajectory(x, y, velocity, 5);
     }
+  }
+
+
+
+  void calcAngleToCat() {
+    float catX = 270;
+    float catY = height - 280;
+    float dx = x - catX;
+    float dy = y - catY;
+    launchAngle = atan2(dx, dy);
   }
 }
 
@@ -125,6 +175,8 @@ void drawTrajectory(float initX, float initY, PVector initVel, float dur) {
   }
   endShape();
 }
+
+
 
 
 class SlingShot extends Polygon {
