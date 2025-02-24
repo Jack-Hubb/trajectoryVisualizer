@@ -4,6 +4,8 @@ class Projectile extends Polygon {
   float bounceAmount = 10, pBounceAmount;
   float weight;
   float friction;
+  float initX, initY;
+  
   // CHANGE ACCORDINGLY
   float bouncyness = 100;
   float bouncynessFalloff;
@@ -18,8 +20,11 @@ class Projectile extends Polygon {
   boolean allowedToBeHeld = true;
   boolean isFired = false;
 
+  
   PVector velocity = new PVector();
-
+  PVector initV = new PVector();
+  
+    PShape trajectoryLine;
   color fillColor;
 
   Projectile(float x, float y, String name ) {
@@ -104,6 +109,11 @@ class Projectile extends Polygon {
         isHolding = false;
         allowedToBeHeld = false;
         isFired = true;
+        
+        initX = x;
+        initY = y;
+        initV = velocity.copy();
+        
       }
     } else {
       // When not in the catapult, apply gravity and regular physics
@@ -112,7 +122,7 @@ class Projectile extends Polygon {
       y += velocity.y * dt;
     }
 
-    x += velocity.x * dt;
+  
 
 
     if (allowedToBeHeld) {
@@ -147,7 +157,7 @@ class Projectile extends Polygon {
   void draw() {
     super.draw();
     if (isFired) {
-      drawTrajectory(x, y, velocity, 5);
+      drawTrajectory(initX, initY, initV, 5);
     }
   }
 
@@ -158,23 +168,30 @@ class Projectile extends Polygon {
     float catY = height - 280;
     launchAngle = atan2(mouseY - catY, mouseX - catX ) + PI;
   }
-}
 
-void drawTrajectory(float initX, float initY, PVector initVel, float dur) {
-  stroke(0);
-  noFill();
-  //start line
-  beginShape();
-  //time loop through duration of line drawn this case 5 seconds
-  for (float elapsedTime = 0; elapsedTime <= dur; elapsedTime += dt) {
-    float x = initX + initVel.x * elapsedTime;  // x using horizontal formula
-    float y = initY + initVel.y * elapsedTime + 0.5 * gravity * sq(elapsedTime) ; // y through vertical formula however the /2 in formula gave weird bugs so its been removed
-    vertex(x, y);
-  }
+
+  void drawTrajectory(float initX, float initY, PVector initVel, float dur) {
+   
+    stroke(0);
+    strokeWeight(2);
+    noFill();
+    //start line
+
+
+    beginShape();
+    //time loop through duration of line drawn this case 5 seconds
+    for (float elapsedTime = 0; elapsedTime <= dur; elapsedTime += dt) {
+      float x = initX + initVel.x * elapsedTime;  // x using horizontal formula
+      float y = initY + initVel.y * elapsedTime + 0.5 * gravity * sq(elapsedTime); // y through vertical formula however the /2 in formula gave weird bugs so its been removed
+    
+      
+     vertex(x, y);
+    }
   endShape();
+strokeWeight(1);
+  }
+  //pshape
 }
-//pshape
-
 
 
 
