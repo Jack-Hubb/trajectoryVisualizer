@@ -5,7 +5,7 @@ class Projectile extends Polygon {
   float weight;
   float friction;
   float initX, initY;
-
+  final float tDur = 3;
   // CHANGE ACCORDINGLY
   float bouncyness = 100;
   float bouncynessFalloff;
@@ -26,6 +26,8 @@ class Projectile extends Polygon {
   PVector mouseLocation = new PVector(mouseX, mouseY);
   PShape trajectoryLine;
   color fillColor;
+
+  PVector[] trajectoryPoints;
 
   Projectile(float x, float y, String name ) {
     addPoint(-30, 30);
@@ -66,6 +68,11 @@ class Projectile extends Polygon {
       bouncyness = 0;
       bouncynessFalloff = 0;
       fillColor = #AFA29A;
+    }
+    int tPoints = int(tDur / dt) + 1;
+    trajectoryPoints = new PVector[tPoints];
+    for (int i = 0; i < tPoints; i++) {
+      trajectoryPoints[i] = new PVector();
     }
   }
 
@@ -116,6 +123,8 @@ class Projectile extends Polygon {
         initX = x;
         initY = y;
         initV = velocity.copy();
+        
+        updateTrajectory(initX, initY,initV , 5);
       }
     } else {
       // When not in the catapult, apply gravity and regular physics
@@ -160,9 +169,8 @@ class Projectile extends Polygon {
   void draw() {
     super.draw();
     if (isFired) {
-      if(trajectoryLine != null){
-      shape(trajectoryLine,initX,initY);
-      }
+
+      println("i got here");
     }
   }
 
@@ -180,26 +188,32 @@ class Projectile extends Polygon {
   }
 
 
-  void drawTrajectory(float initX, float initY, PVector initVel, float dur) {
 
+  void updateTrajectory(float initX, float initY, PVector initVel, float dur) {
+    int nPoints = trajectoryPoints.length;
+    for (int i = 0; i < nPoints; i++) {
+      float elapsedTime = i * dt;
+      float x = initX + initVel.x * elapsedTime;
+      float y = initY + initVel.y * elapsedTime + 0.5 * gravity * sq(elapsedTime);
+
+      trajectoryPoints[i].x = x;
+      trajectoryPoints[i].y = y;
+    }
+  }
+
+  void drawTrajectory(PVector[] trajectoryPoints) {
     stroke(0);
     strokeWeight(1);
     noFill();
-    //start line
 
-    trajectoryLine = createShape();
-    trajectoryLine.beginShape();
-    //time loop through duration of line drawn this case 5 seconds
-    for (float elapsedTime = 0; elapsedTime <= dur; elapsedTime += dt) {
-      float x = initX + initVel.x * elapsedTime;  // x using horizontal formula
-      float y = initY + initVel.y * elapsedTime + 0.5 * gravity * sq(elapsedTime); // y through vertical formula however the /2 in formula gave weird bugs so its been removed
-
-
-      trajectoryLine.vertex(x, y);
+    beginShape();
+    for (PVector p : trajectoryPoints) {
+      vertex(p.x, p.y);
     }
-    trajectoryLine.endShape();
-    strokeWeight(1);
+    endShape();
   }
+
+
   //pshape
 }
 
