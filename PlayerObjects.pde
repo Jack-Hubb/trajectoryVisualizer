@@ -5,7 +5,7 @@ class Projectile extends Polygon {
   float weight;
   float friction;
   float initX, initY;
-  
+
   // CHANGE ACCORDINGLY
   float bouncyness = 100;
   float bouncynessFalloff;
@@ -20,11 +20,11 @@ class Projectile extends Polygon {
   boolean allowedToBeHeld = true;
   boolean isFired = false;
 
-  
+
   PVector velocity = new PVector();
   PVector initV = new PVector();
-  
-    PShape trajectoryLine;
+  PVector mouseLocation = new PVector(mouseX, mouseY);
+  PShape trajectoryLine;
   color fillColor;
 
   Projectile(float x, float y, String name ) {
@@ -75,12 +75,15 @@ class Projectile extends Polygon {
     calcAngleToCat();
     println(launchAngle);
 
+
+    mouseLocation.x = mouseX;
+    mouseLocation.y = mouseY;
     float anchorX = 270;
     float anchorY = height - 280;
 
     if (inCatapult) {
 
-      if (mousePressed && checkCollisionPoint(new PVector(mouseX, mouseY))) {
+      if (mousePressed && checkCollisionPoint(mouseLocation)) {
         isHolding = true;
         allowedToBeHeld = true;
       }
@@ -109,11 +112,10 @@ class Projectile extends Polygon {
         isHolding = false;
         allowedToBeHeld = false;
         isFired = true;
-        
+
         initX = x;
         initY = y;
         initV = velocity.copy();
-        
       }
     } else {
       // When not in the catapult, apply gravity and regular physics
@@ -122,12 +124,12 @@ class Projectile extends Polygon {
       y += velocity.y * dt;
     }
 
-  
+
 
 
     if (allowedToBeHeld) {
       if (Mouse.onDown(Mouse.LEFT)) {
-        if (checkCollisionPoint(new PVector(mouseX, mouseY))) isHolding = true;
+        if (checkCollisionPoint(mouseLocation)) isHolding = true;
       } else if (!Mouse.onDown(Mouse.LEFT)) isHolding = false;
     }
 
@@ -140,6 +142,7 @@ class Projectile extends Polygon {
     if (y >= height-180) {
       velocity.y = -bouncyness;
       bounceAmount--;
+      Bounce();
       if (-bouncyness >= -10)y = height - 180;
     }
 
@@ -157,11 +160,18 @@ class Projectile extends Polygon {
   void draw() {
     super.draw();
     if (isFired) {
-      drawTrajectory(initX, initY, initV, 5);
+      if(trajectoryLine != null){
+      shape(trajectoryLine,initX,initY);
+      }
     }
   }
 
+  void Bounce() {
 
+    initX = x;
+    initY = y;
+    initV = velocity.copy();
+  }
 
   void calcAngleToCat() {
     float catX = 270;
@@ -171,24 +181,24 @@ class Projectile extends Polygon {
 
 
   void drawTrajectory(float initX, float initY, PVector initVel, float dur) {
-   
+
     stroke(0);
-    strokeWeight(2);
+    strokeWeight(1);
     noFill();
     //start line
 
-
-    beginShape();
+    trajectoryLine = createShape();
+    trajectoryLine.beginShape();
     //time loop through duration of line drawn this case 5 seconds
     for (float elapsedTime = 0; elapsedTime <= dur; elapsedTime += dt) {
       float x = initX + initVel.x * elapsedTime;  // x using horizontal formula
       float y = initY + initVel.y * elapsedTime + 0.5 * gravity * sq(elapsedTime); // y through vertical formula however the /2 in formula gave weird bugs so its been removed
-    
-      
-     vertex(x, y);
+
+
+      trajectoryLine.vertex(x, y);
     }
-  endShape();
-strokeWeight(1);
+    trajectoryLine.endShape();
+    strokeWeight(1);
   }
   //pshape
 }

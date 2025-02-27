@@ -24,11 +24,26 @@ class ScenePlay {
     metalSpawn.update();
     woodSpawn.update();
 
-
+    println(projectiles.size());
     for (int i = 0; i < projectiles.size(); i++) {
       Projectile p = projectiles.get(i);
       p.update();
+      
+        if (p.x > width+50) {
+          p = null;
+        }
+        else if (p.x < -50) {
+          p = null;
+        }
+        else if (p.y > height+50) {
+          p = null;
+        }
+        else if (p.x < -50) {
+          p = null;
+        }
     }
+    
+    
     if (slingShot != null)slingShot.update();
     buttonCD -= dt;
 
@@ -107,8 +122,6 @@ class ScenePlay {
     text("Metal", 100, height-50);
     text("Wood", 205, height-50);
     text("Paper", 205, height-110);
-    
-
   }
 }
 
