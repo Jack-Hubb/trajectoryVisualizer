@@ -24,7 +24,6 @@ class Projectile extends Polygon {
   PVector velocity = new PVector();
   PVector initV = new PVector();
   PVector mouseLocation = new PVector(mouseX, mouseY);
-  PShape trajectoryLine;
   color fillColor;
 
   PVector[] trajectoryPoints;
@@ -123,8 +122,8 @@ class Projectile extends Polygon {
         initX = x;
         initY = y;
         initV = velocity.copy();
-        
-        updateTrajectory(initX, initY,initV , 5);
+
+        updateTrajectory(initX, initY, initV, 5);
       }
     } else {
       // When not in the catapult, apply gravity and regular physics
@@ -169,16 +168,16 @@ class Projectile extends Polygon {
   void draw() {
     super.draw();
     if (isFired) {
-
+      drawTrajectory(trajectoryPoints);
       println("i got here");
     }
   }
 
   void Bounce() {
-
     initX = x;
     initY = y;
     initV = velocity.copy();
+    updateTrajectory(initX, initY, initV, 5);
   }
 
   void calcAngleToCat() {

@@ -28,22 +28,19 @@ class ScenePlay {
     for (int i = 0; i < projectiles.size(); i++) {
       Projectile p = projectiles.get(i);
       p.update();
-      
-        if (p.x > width+50) {
-          p = null;
-        }
-        else if (p.x < -50) {
-          p = null;
-        }
-        else if (p.y > height+50) {
-          p = null;
-        }
-        else if (p.x < -50) {
-          p = null;
-        }
+
+      if (p.x > width+50) {
+        projectiles.remove(p);
+      } else if (p.x < -50) {
+        projectiles.remove(p);
+      } else if (p.y > height+50) {
+        projectiles.remove(p);
+      } else if (p.x < -50) {
+        projectiles.remove(p);
+      }
     }
-    
-    
+
+
     if (slingShot != null)slingShot.update();
     buttonCD -= dt;
 
