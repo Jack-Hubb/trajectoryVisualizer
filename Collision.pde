@@ -47,7 +47,8 @@ class Polygon extends AABB {
   private ArrayList<PVector> points = new ArrayList<PVector>();
   private PVector[] pointsTransformed;
   private PVector[] normals;
-
+  
+  color fillColor;
   AABB aabb = new AABB();
 
   private float rotation = 0;
@@ -103,6 +104,8 @@ class Polygon extends AABB {
       pointsTransformed[i] = p;
     }
 
+
+
     // calc normals
     normals = new PVector[pointsTransformed.length];
     for (int i =0; i < pointsTransformed.length; i++) {
@@ -116,7 +119,7 @@ class Polygon extends AABB {
   }
 
   void draw() {
-    fill(255);
+    fill(fillColor);
 
     beginShape();
     for (int i = 0; i < pointsTransformed.length; i++) {
@@ -135,6 +138,11 @@ class Polygon extends AABB {
 
   void addPoint(float x, float y) {
     points.add(new PVector(x, y));
+  }
+  
+  void setColor(color fill){
+  
+  fillColor = fill;
   }
 
   void checkCollisions(ArrayList<Polygon> shapes) {

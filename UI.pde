@@ -4,25 +4,28 @@ class Button extends AABB {
   PVector position = new PVector();
   float w, h;
   boolean isHovered;
-  boolean activated;
+  boolean activated, prevActivated;
   float buttonCD;
+  float maxButtonCD;
   boolean PLeftPressed;
 
 
-  Button(float X, float Y, float W, float H) {
+  Button(float X, float Y, float W, float H, float cooldown) {
 
     position.x = X;
     position.y = Y;
     w = W;
     h = H;
-    xmin = X-w/2;
+    xmin = X - w/2;
     xmax = X + W/2;
-    ymin = Y-h/2;
+    ymin = Y - h/2;
     ymax = Y + H/2;
+    maxButtonCD = cooldown;
   }
 
   void update() {
     PLeftPressed = Mouse.onDown(Mouse.LEFT);
+    prevActivated = activated;
     buttonCD -= millis()/1000;
    
     activated = false;
@@ -34,7 +37,7 @@ class Button extends AABB {
 
     if (isHovered && Mouse.onDown(Mouse.LEFT)) {
       activated = true;
-      buttonCD = 3;
+      buttonCD = maxButtonCD;
      
     }
   }
