@@ -24,7 +24,7 @@ class ScenePlay {
     metalSpawn.update();
     woodSpawn.update();
 
-    println(projectiles.size());
+
     for (int i = 0; i < projectiles.size(); i++) {
       Projectile p = projectiles.get(i);
       p.update();
@@ -57,25 +57,21 @@ class ScenePlay {
         Projectile p = new Projectile(100, height-300, "RUBBER");
         projectiles.add(p);
         buttonCD = 3;
-        println("rubber");
       } else if (paperSpawn.activated) {
         //spawn corisponding projectile
         Projectile p = new Projectile(100, height-300, "PAPER");
         projectiles.add(p);
         buttonCD = 3;
-        println("paper");
       } else if (metalSpawn.activated) {
         //spawn corisponding projectile
         Projectile p = new Projectile(100, height-300, "METAL");
         projectiles.add(p);
         buttonCD = 3;
-        println("metal");
       } else if (woodSpawn.activated) {
         //spawn corisponding projectile
         Projectile p = new Projectile(100, height-300, "WOOD");
         projectiles.add(p);
         buttonCD = 3;
-        println("wood");
       }
     }
 
@@ -119,6 +115,9 @@ class ScenePlay {
     text("Metal", 100, height-50);
     text("Wood", 205, height-50);
     text("Paper", 205, height-110);
+    ellipse(270, 390, 5, 5);
+    fill(30);
+    rect(251, height - 365, 38, 90);
   }
 }
 
@@ -169,6 +168,8 @@ class SceneTitle {
 
 class SceneHowTo {
 
+  PImage traj;
+
   Button toMenuButton = new Button(200, height-75, 250, 80, 3);
   Button playButton = new Button(width-200, height-75, 250, 80, 3);
   Button prevSlide = new Button(200, height - 175, 250, 80, .5);
@@ -177,7 +178,9 @@ class SceneHowTo {
   int slide = 0;
 
   SceneHowTo() {
+    traj = loadImage("trajExample.png");
   }
+
   void update() {
     playButton.update();
     toMenuButton.update();
@@ -188,6 +191,9 @@ class SceneHowTo {
     if (prevSlide.activated && !prevSlide.prevActivated) slide--;
     if (nextSlide.activated && !nextSlide.prevActivated) slide++;
     println(slide);
+    
+    if(slide > 3) slide = 0;
+    if(slide < 0) slide = 3;
   }
   void draw() {
     background(20);
@@ -221,10 +227,7 @@ class SceneHowTo {
       text("X = Initial Horizontal Position + Projected Horizontal Velocity * (Elapsed Time)", width/2, 200);
       text("Y = Initial Vertical Position + Projected Vertical Velocity * (Elapsed Time)", width/2, 250);
       text("+ GRAVITY * (Elapsed Time ^ 2) / 2", width/2, 300);
-      ellipse(255, 150, 15, 15);
-      ellipse(242, 200, 15, 15);
-      ellipse(15, 250, 15, 15);
-      ellipse(15, 300, 15, 15);
+
       break;
       // applied trajectory to sim
     case 1:
@@ -232,10 +235,15 @@ class SceneHowTo {
       fill(255);
       text("Trajectory", width/2, 50);
       textSize(35);
-      String text = "In this program when you drop an object into the slingshot trajectory is calculated by taking the potential velocity from you pulling the slingshot back and the initial location from wherever you let go then projects points across five seconds.";
-      text(text, 25, 50, width-50, height-250);
+      String text = "In this program when you drop an object into the slingshot trajectory is calculated by taking the potential velocity from you pulling the slingshot back and the launch angle from the object your launching and the slingshot.";
+      text(text, 25, 50, width-50, height-550);
+      image(traj, 100, 215);
       break;
     case 2:
+      textSize(50);
+      fill(255);
+      text("Physics Materials", width/2, 50);
+      textSize(40);
       String text2 = "Physics materials can add variables such as friction, air drag, and how much an object bounces";
       text(text2, 25, 50, width-50, height-250);
       break;
@@ -250,9 +258,7 @@ class SceneHowTo {
       text("Drag and drop the projectile into the slingshot.", width/2, 250);
       textSize(39);
       text("Drag the projectile to the left and launch the projectile to destroy the tower!", width/2, 350);
-      ellipse(45, 150, 15, 15);
-      ellipse(242, 250, 15, 15);
-      ellipse(15, 350, 15, 15);
+
       break;
     }
   }

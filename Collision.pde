@@ -77,6 +77,11 @@ class Polygon extends AABB {
     position = p.copy();
     dirty = true;
   }
+  
+  public boolean getColliding(){
+  return colliding;  
+  }
+  
 
   void update() {
     doneChecking = false;

@@ -12,6 +12,7 @@ class Projectile extends Polygon {
   float launchAngle;
   float distance;
   float launchScale;
+  float anchorX, anchorY;
 
   boolean inAir = true;
   boolean lookingForCatapult = true;
@@ -20,6 +21,7 @@ class Projectile extends Polygon {
   boolean showTrajectoryLine = true;  // false by default
   boolean allowedToBeHeld = true;
   boolean isFired = false;
+  boolean normallyBounces;
 
 
   PVector velocity = new PVector();
@@ -31,39 +33,63 @@ class Projectile extends Polygon {
   PVector[] trajectoryPoints;
 
   Projectile(float x, float y, String name ) {
-    addPoint(-30, 30);
-    addPoint(30, 30);
-    addPoint(0, -30);
-    addPoint(-30, 30);
-    recalc();
+
     this.x = x;
     this.y = y;
 
     //velocity.x = 200;
 
     if (name == "RUBBER") {
-      drag = 15;
+      drag = 100;
       friction = 30;
       bouncyness = 800;
       bouncynessFalloff = 50;
+      normallyBounces = true;
+      addPoint(-20, -30);
+      addPoint(20, -30);
+      addPoint(40, -10);
+      addPoint(20, 20);
+      addPoint(-20, 30);
+      addPoint(-40, 0);
+      recalc();
       setColor(#050505);
     } else if (name == "METAL") {
-      drag = 15;
+      drag = 200;
       friction = 5;
       bouncyness = 100;
       bouncynessFalloff = 50;
+      addPoint(-50, -20);
+      addPoint(50, -20);
+      addPoint(70, 40);
+      addPoint(0, 70);
+      addPoint(-70, 40);
+      recalc();
       setColor(#313131);
     } else if (name == "WOOD") {
-      drag = 35;
-      friction = 28;
+      drag = 150;
+      friction = 250;
       bouncyness = 200;
-      bouncynessFalloff = 100;
+      bouncynessFalloff = 50;
+      normallyBounces = false;
+      addPoint(-50, -30);
+      addPoint(50, -40);
+      addPoint(60, 20);
+      addPoint(40, 50);
+      addPoint(-30, 40);
+      addPoint(-40, 10);
+      recalc();
       setColor(#763007);
     } else if (name == "PAPER") {
-      drag = 100;
-      friction = 20;
+      drag = 300;
+      friction = 50;
       bouncyness = 50;
       bouncynessFalloff = 0;
+      normallyBounces = false;
+      addPoint(-40, -20);
+      addPoint(40, -20);
+      addPoint(30, 30);
+      addPoint(-50, 30);
+      recalc();
       setColor(#AFA29A);
     }
 
@@ -78,21 +104,44 @@ class Projectile extends Polygon {
     super.update();
     pBounceAmount = bounceAmount;
     calcAngleToCat();
-    println(launchAngle);
 
+    println(inAir);
 
     mouseLocation.x = mouseX;
     mouseLocation.y = mouseY;
-    float anchorX = 270;
-    float anchorY = height - 330;
+    anchorX = 270;
+    anchorY = height - 330;
+
+    if (getColliding()) {
+      inAir = false;
+    } else if (!getColliding()) {
+      inAir = true;
+    }
+
+
+
+    if (y >= height-180) {
+      velocity.y = -bouncyness;
+      bounceAmount--;
+      Bounce();
+      if (-bouncyness >= -10)y = height - 180;
+      inAir = false;
+    } else {
+      inAir = true;
+    }
+
+
 
     if (inCatapult) {
+
       distance = sqrt(sq(anchorY - y)+sq(anchorX - x));
-launchScale = 4;
+      launchScale = 5;
       initX = x;
       initY = y;
       projVelocity.x = cos(launchAngle) *  distance * launchScale;
       projVelocity.y = sin(launchAngle) *  distance * launchScale;
+      projVelocity.x -= drag*.5;
+
       updateTrajectory(initX, initY, projVelocity, 5);
       if (mousePressed && checkCollisionPoint(mouseLocation)) {
         isHolding = true;
@@ -112,12 +161,13 @@ launchScale = 4;
       if (!mousePressed && isHolding) {
 
         distance = sqrt(sq(anchorY - y)+sq(anchorX - x));
-        launchScale = 4;
+        launchScale = 5;
 
 
         velocity.x = cos(launchAngle) *  distance * launchScale;
         velocity.y = sin(launchAngle) *  distance * launchScale;
-
+        projVelocity = velocity.copy();
+        projVelocity.x -= drag*.5;
 
         inCatapult = false;
         isHolding = false;
@@ -126,25 +176,28 @@ launchScale = 4;
 
         initX = x;
         initY = y;
-        initV = velocity.copy();
 
-        updateTrajectory(initX, initY, initV, 5);
+        updateTrajectory(initX, initY, projVelocity, 5);
         inAir = true;
+         println("i happened");
       }
     } else {
       // When not in the catapult, apply gravity and regular physics
 
-      if (inAir) {
+      if (inAir == true) {
         velocity.y += gravity * dt;
         velocity.x -= drag * dt;
         //change
         if (velocity.x <= 0) velocity.x = 0;
         x += velocity.x * dt;
         y += velocity.y * dt;
-      } else {
+      } else if (inAir != true ) {
         velocity.y += gravity * dt;
-        x += velocity.x - friction * dt;
+        velocity.x -= friction * dt;
+         if (velocity.x <= 0) velocity.x = 0;
+        x += velocity.x * dt;
         y += velocity.y * dt;
+        println("i happened");
       }
     }
 
@@ -168,6 +221,9 @@ launchScale = 4;
       bounceAmount--;
       Bounce();
       if (-bouncyness >= -10)y = height - 180;
+      inAir = false;
+    } else {
+      inAir = true;
     }
 
 
@@ -182,26 +238,43 @@ launchScale = 4;
   }
 
   void draw() {
-
+    textSize(15);
     if (isFired) {
       drawTrajectory(trajectoryPoints);
-    } else if (inCatapult) {
+      fill(0);
+      text("X Velocity: " + round(velocity.x) + " M/s", x, y - 100);
+      text("Y Velocity: " + round(projVelocity.y * -1) + " M/s", x, y - 80);
+    } else if (inCatapult && isHolding) {
       drawTrajectory(trajectoryPoints);
+      fill(0);
+      strokeWeight(6);
+      line(x, y, anchorX, anchorY);
+      strokeWeight(1);
+      text("X Velocity: " + round(projVelocity.x) + " M/s", x, y - 100);
+      text("Y Velocity: " + round(projVelocity.y * -1) + " M/s", x, y - 80);
+      text("Launch Angle: " + (round(degrees(atan2(x -anchorX, y - anchorY))) * -1)  + " Degrees", x, y - 60);
     }
     super.draw();
   }
 
   void Bounce() {
-    initX = x;
-    initY = y;
-    initV = velocity.copy();
-    updateTrajectory(initX, initY, initV, 5);
-  }
+    if (normallyBounces) {
+      initX = x;
+      initY = y;
+      initV = velocity.copy();
+      updateTrajectory(initX, initY, initV, 5);
+    } else {
 
+      initX = 9999999;
+      initY = 9999999;
+      initV = velocity.copy();
+      updateTrajectory(initX, initY, initV, 5);
+    }
+  }
   void calcAngleToCat() {
     float catX = 270;
     float catY = height - 330;
-    launchAngle = atan2(mouseY - catY, mouseX - catX ) + PI;
+    launchAngle = atan2(y - catY, x - catX ) + PI;
   }
 
 
@@ -258,7 +331,12 @@ class SlingShot extends Polygon {
   }
 
   void draw() {
+    noStroke();
     super.draw();
+    stroke(1);
+
+    fill(0);
+    rect(position.x + 62, position.y, 15, 99999);
   }
 }
 // need to make velocity x and y influinced by drag and weight

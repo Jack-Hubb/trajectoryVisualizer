@@ -1,9 +1,13 @@
+
 SceneTitle sceneTitle;
 ScenePlay scenePlay;
 SceneHowTo sceneHowTo;
 SceneWin sceneWin;
 
+
+
 float dt = 0;
+
 float prevTime = 0;
 final float gravity = 1000;
 
@@ -12,6 +16,7 @@ final float gravity = 1000;
 void setup() {
   size(1280, 720);
   switchToTitle();
+
 }
 
 
@@ -26,7 +31,7 @@ void draw() {
     sceneWin.update();
   } else if (sceneHowTo != null) {
     sceneHowTo.update();
-   if (sceneHowTo != null) sceneHowTo.draw();
+    if (sceneHowTo != null) sceneHowTo.draw();
   } else if (sceneTitle != null) {
     sceneTitle.update();
     if (sceneTitle != null) sceneTitle.draw();
