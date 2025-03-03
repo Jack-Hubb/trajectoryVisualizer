@@ -5,11 +5,11 @@ class TowerPart extends Polygon {
   TowerPart(float x, float y, float w, float h) {
     position.x = x;
     position.y = y;
-    addPoint(position.x, position.y);
-    addPoint(position.x + w, position.y);
-    addPoint(position.x + w, position.y + h);
-    addPoint(position.x, position.y + h);
-    addPoint(position.x, position.y);
+    addPoint(-30, 60);
+    addPoint(30, 60);
+    addPoint(30, -60);
+    addPoint(-30, -60);
+    //addPoint(30, 60);
     recalc();
     setPosition(position);
   }

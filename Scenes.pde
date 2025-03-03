@@ -1,6 +1,8 @@
 
 class ScenePlay {
 
+
+
   Button rubberSpawn = new Button(100, height-110, 100, 50, 3);
   Button paperSpawn = new Button(205, height-110, 100, 50, 3);
   Button metalSpawn = new Button(100, height-50, 100, 50, 3);
@@ -10,7 +12,7 @@ class ScenePlay {
   float buttonCD;
   SlingShot slingShot;
   ArrayList<Projectile> projectiles = new ArrayList();
-  ArrayList<TowerPart> tParts = new ArrayList();
+  //ArrayList<TowerPart> tParts = new ArrayList();
 
   ScenePlay() {
     size(1280, 720);
@@ -18,10 +20,10 @@ class ScenePlay {
     //generate tower materials
     slingShot = new SlingShot(200, height-350);
 
-    generateTower();
+  
 
-    TowerPart j = new TowerPart(width/2, height /2, 50, 100);
-    tParts.add(j);
+    //TowerPart j = new TowerPart(width/2, height /2, 50, 100);
+    //tParts.add(j);
   }
 
   void update() {
@@ -87,10 +89,28 @@ class ScenePlay {
       p.lookingForCatapult = false;
     }
 
-    for (int i = 0; i < tParts.size(); i++) {
-      TowerPart tp = tParts.get(i);
-      tp.update();
-    }
+
+
+    //for (int i = 0; i < tParts.size(); i++) {
+    //  TowerPart tp = tParts.get(i);
+    //  tp.update();
+
+      //for (int j = 0; j < projectiles.size(); j++) {
+      //  Projectile p = projectiles.get(j);
+
+      //  if ( p.checkCollision(tParts.get(i)) ) {
+
+      //    if (p.velocity.x > 0 ) {
+      //      p.velocity.x = -p.bouncyness;
+      //    } 
+          
+      //    //if (p.velocity.x < 0 ) {
+      //    //  p.velocity.x = p.bouncyness;
+      //    //}
+   
+      //  }
+      //}
+    //}
   }
   void draw() {
 
@@ -104,10 +124,7 @@ class ScenePlay {
       Projectile p = projectiles.get(i);
       p.draw();
     }
-    for (int i = 0; i < tParts.size(); i++) {
-      TowerPart tp = tParts.get(i);
-      tp.draw();
-    }
+
 
     fill(40);
     rect(-50, height - 150, width+50, 500);
@@ -139,27 +156,16 @@ class ScenePlay {
 
     //  rect(part.position.x, part.position.y, 50,100);
     //}
+
+    //for (int i = 0; i < tParts.size(); i++) {
+    //  TowerPart tp = tParts.get(i);
+    //  tp.draw();
+    //}
   }
 
 
 
 
-  void generateTower() {
-    int cols = 3;  // Number of columns
-    int rows = 4;  // Number of rows
-    float partWidth = 50;
-    float partHeight = 100;
-    float startX = width - 200;  // Tower start position
-    float startY = height - 250;
-
-    for (int row = 0; row < rows; row++) {
-      for (int col = 0; col < cols; col++) {
-        float x = startX + col * partWidth;
-        float y = startY - row * partHeight;
-        tParts.add(new TowerPart(x, y, partWidth, partHeight));
-      }
-    }
-  }
 }
 
 

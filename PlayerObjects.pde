@@ -40,7 +40,7 @@ class Projectile extends Polygon {
     this.y = y;
 
     //velocity.x = 200;
-
+    // assign physics settings based off type
     if (name == "RUBBER") {
       drag = 100;
       friction = 30;
@@ -99,7 +99,7 @@ class Projectile extends Polygon {
       recalc();
       setColor(#AFA29A);
     }
-
+    //preloads array to avoid memory leak points set and reset with update traj
     int tPoints = int(tDur / dt) + 1;
     trajectoryPoints = new PVector[tPoints];
     for (int i = 0; i < tPoints; i++) {
@@ -112,13 +112,14 @@ class Projectile extends Polygon {
     pBounceAmount = bounceAmount;
     calcAngleToCat();
 
-    println(inAir);
+
 
     mouseLocation.x = mouseX;
     mouseLocation.y = mouseY;
     anchorX = 270;
     anchorY = height - 330;
 
+    //checks if in the air or not
     if (getColliding()) {
       inAir = false;
     } else if (!getColliding()) {
@@ -126,19 +127,26 @@ class Projectile extends Polygon {
     }
 
 
-
+    // bounces if it hits the floor
     if (y >= height-180) {
       velocity.y = -bouncyness;
       bounceAmount--;
-      Bounce();
+      BounceProj();
       if (-bouncyness >= -10)y = height - 180;
       inAir = false;
     } else {
       inAir = true;
     }
 
+    if (x > width) {
+      velocity.x = -bouncyness;
+      BounceProj();
+    } else if (x < 0) {
+      velocity.x = bouncyness;
+      BounceProj();
+    }
 
-
+    // object is in the catapult
     if (inCatapult) {
 
       distance = sqrt(sq(anchorY - y)+sq(anchorX - x));
@@ -156,8 +164,8 @@ class Projectile extends Polygon {
       }
 
       if (isHolding) {
-        
-        
+
+
         x = mouseX;
         y = mouseY;
       } else {
@@ -166,7 +174,7 @@ class Projectile extends Polygon {
         y = anchorY;
       }
 
-
+      // has let go (object launches)
       if (!Mouse.isDown(Mouse.LEFT) && isHolding) {
 
         distance = sqrt(sq(anchorY - y)+sq(anchorX - x));
@@ -188,55 +196,47 @@ class Projectile extends Polygon {
 
         updateTrajectory(initX, initY, projVelocity, 5);
         inAir = true;
-        println("i happened");
       }
     } else {
-      // When not in the catapult, apply gravity and regular physics
+      //  not in the catapult apply gravity and regular physics
 
       if (inAir == true) {
         velocity.y += gravity * dt;
-        velocity.x -= drag * dt;
+
         //change
-        if (velocity.x <= 0) velocity.x = 0;
+        if (velocity.x > 0) {
+          velocity.x = max(0, velocity.x - drag * dt);
+        } else if (velocity.x < 0) {
+          velocity.x = min(0, velocity.x + drag * dt);
+        }
         x += velocity.x * dt;
         y += velocity.y * dt;
       } else if (inAir != true ) {
         velocity.y += gravity * dt;
-        velocity.x -= friction * dt;
-        if (velocity.x <= 0) velocity.x = 0;
+
+        if (velocity.x > 0) {
+          velocity.x = max(0, velocity.x - friction * dt);
+        } else if (velocity.x < 0) {
+          velocity.x = min(0, velocity.x + friction * dt);
+        }
         x += velocity.x * dt;
         y += velocity.y * dt;
-        println("i happened");
       }
     }
 
 
 
-
+    // sets holding if clicked on
     if (allowedToBeHeld) {
       if (Mouse.isDown(Mouse.LEFT)) {
         if (checkCollisionPoint(mouseLocation)) isHolding = true;
       } else if (!Mouse.isDown(Mouse.LEFT)) isHolding = false;
     }
-
+    // when outside of the slingshot holding
     if (isHolding) {
-   x = mouseX;
-   y = mouseY;
-      
-    } else {
+      x = mouseX;
+      y = mouseY;
     }
-
-    if (y >= height-180) {
-      velocity.y = -bouncyness;
-      bounceAmount--;
-      Bounce();
-      if (-bouncyness >= -10)y = height - 180;
-      inAir = false;
-    } else {
-      inAir = true;
-    }
-
-
 
 
     if (pBounceAmount > bounceAmount) bouncyness -= bouncynessFalloff;
@@ -265,12 +265,11 @@ class Projectile extends Polygon {
       text("X Velocity: " + round(projVelocity.x) + " M/s", x, y - 100);
       text("Y Velocity: " + round(projVelocity.y * -1) + " M/s", x, y - 80);
       text("Launch Angle: " + (round(degrees(atan2(x -anchorX, y - anchorY))) * -1)  + " Degrees", x, y - 60);
-   
     }
     super.draw();
   }
 
-  void Bounce() {
+  void BounceProj() {
     if (normallyBounces) {
       initX = x;
       initY = y;
@@ -284,21 +283,22 @@ class Projectile extends Polygon {
       updateTrajectory(initX, initY, initV, 5);
     }
   }
+
+
   void calcAngleToCat() {
     float catX = 270;
     float catY = height - 330;
     launchAngle = atan2(y - catY, x - catX ) + PI;
   }
-  
-  void calcAngleToMouse(){
-  float dx = mouseX - x;
-  float dy = mouseY - y;
-  mouseAngle = atan2(dy, dx);
-  
+
+  void calcAngleToMouse() {
+    float dx = mouseX - x;
+    float dy = mouseY - y;
+    mouseAngle = atan2(dy, dx);
   }
 
 
-
+  // calc trajectory line
   void updateTrajectory(float initX, float initY, PVector initVel, float dur) {
     int nPoints = trajectoryPoints.length;
     for (int i = 0; i < nPoints; i++) {
@@ -310,7 +310,7 @@ class Projectile extends Polygon {
       trajectoryPoints[i].y = y;
     }
   }
-
+  // draw the shape of the trajectory line
   void drawTrajectory(PVector[] trajectoryPoints) {
     stroke(0);
     strokeWeight(1);
