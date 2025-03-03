@@ -148,7 +148,6 @@ class ScenePlay {
     textSize(30);
     text("Main Menu", width - 120, height - 80);
 
-    ellipse(270, 390, 5, 5);
     fill(30);
     rect(251, height - 365, 38, 90);
 
