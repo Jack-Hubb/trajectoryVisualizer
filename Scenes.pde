@@ -200,9 +200,9 @@ class SceneTitle {
     text("Tragectory Visualizer", width/2, height/2 - 230);
     textSize(40);
     fill(0);
-    text("play!", width/2, height/2-100);
-    text("How To Play!", width/2, height/2-5);
-    text("Quit!", width/2, height/2+90);
+    text("Play", width/2, height/2-100);
+    text("Learning", width/2, height/2-5);
+    text("Quit", width/2, height/2+90);
     textSize(25);
   }
 }
@@ -327,7 +327,7 @@ class SceneHowTo {
       text("Press one of the four buttons in the bottom right to spawn a projectile.", width/2, 150);
       text("Drag and drop the projectile into the slingshot.", width/2, 250);
       textSize(39);
-      text("Drag the projectile to the left and launch the projectile to destroy the tower!", width/2, 350);
+      text("Drag the projectile to the left and launch the projectile and watch how the projectile interacts with the area.", width/2, 350);
 
       break;
     }
