@@ -21,6 +21,7 @@ class Button extends AABB {
     ymin = Y - h/2;
     ymax = Y + H/2;
     maxButtonCD = cooldown;
+ 
   }
 
   void update() {
@@ -49,5 +50,7 @@ class Button extends AABB {
 
 
     rect(position.x-w/2, position.y-h/2, w, h);
+
+
   }
 }

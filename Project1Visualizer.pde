@@ -36,6 +36,7 @@ void draw() {
     sceneTitle.update();
     if (sceneTitle != null) sceneTitle.draw();
   }
+  Mouse.update();
 }
 
 
