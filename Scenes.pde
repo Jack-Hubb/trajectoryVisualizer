@@ -10,13 +10,18 @@ class ScenePlay {
   float buttonCD;
   SlingShot slingShot;
   ArrayList<Projectile> projectiles = new ArrayList();
-
+  ArrayList<TowerPart> tParts = new ArrayList();
 
   ScenePlay() {
     size(1280, 720);
     background(#FFFFFF);
     //generate tower materials
     slingShot = new SlingShot(200, height-350);
+
+    generateTower();
+
+    TowerPart j = new TowerPart(width/2, height /2, 50, 100);
+    tParts.add(j);
   }
 
   void update() {
@@ -31,14 +36,8 @@ class ScenePlay {
       Projectile p = projectiles.get(i);
       p.update();
 
-      if (p.x > width+50) {
-        projectiles.remove(p);
-      } else if (p.x < -50) {
-        projectiles.remove(p);
-      } else if (p.y > height+50) {
-        projectiles.remove(p);
-      } else if (p.x < -50) {
-        projectiles.remove(p);
+      if (p.x > width+50 || p.x < -50) {
+        projectiles.remove(i);
       }
     }
 
@@ -84,7 +83,13 @@ class ScenePlay {
       if (p.checkCollision(slingShot) && !p.isFired) {
         p.inCatapult = true;
       }
+
       p.lookingForCatapult = false;
+    }
+
+    for (int i = 0; i < tParts.size(); i++) {
+      TowerPart tp = tParts.get(i);
+      tp.update();
     }
   }
   void draw() {
@@ -98,6 +103,10 @@ class ScenePlay {
     for (int i = 0; i < projectiles.size(); i++) {
       Projectile p = projectiles.get(i);
       p.draw();
+    }
+    for (int i = 0; i < tParts.size(); i++) {
+      TowerPart tp = tParts.get(i);
+      tp.draw();
     }
 
     fill(40);
@@ -125,6 +134,31 @@ class ScenePlay {
     ellipse(270, 390, 5, 5);
     fill(30);
     rect(251, height - 365, 38, 90);
+
+    //for(TowerPart part : tParts){
+
+    //  rect(part.position.x, part.position.y, 50,100);
+    //}
+  }
+
+
+
+
+  void generateTower() {
+    int cols = 3;  // Number of columns
+    int rows = 4;  // Number of rows
+    float partWidth = 50;
+    float partHeight = 100;
+    float startX = width - 200;  // Tower start position
+    float startY = height - 250;
+
+    for (int row = 0; row < rows; row++) {
+      for (int col = 0; col < cols; col++) {
+        float x = startX + col * partWidth;
+        float y = startY - row * partHeight;
+        tParts.add(new TowerPart(x, y, partWidth, partHeight));
+      }
+    }
   }
 }
 
@@ -196,8 +230,8 @@ class SceneHowTo {
         gif[i] = loadImage("mats00" + (i+1) +".png");
       } else if (i >= 9 && i < 99) {
         gif[i] = loadImage("mats0" + (i+1) +".png");
-      } else if( i >= 99){
-              gif[i] = loadImage("mats" + (i+1) +".png");
+      } else if ( i >= 99) {
+        gif[i] = loadImage("mats" + (i+1) +".png");
       }
     }
   }
@@ -215,14 +249,13 @@ class SceneHowTo {
 
     if (slide > 3) slide = 0;
     if (slide < 0) slide = 3;
-    
-    
+
+
     gifCounter++;
-    if(gifCounter > 1){
-     gifIndex++;
-    if(gifIndex >= gif.length) gifIndex = 0;
-    gifCounter = 0;    
-   
+    if (gifCounter > 1) {
+      gifIndex++;
+      if (gifIndex >= gif.length) gifIndex = 0;
+      gifCounter = 0;
     }
     println(gifIndex);
   }

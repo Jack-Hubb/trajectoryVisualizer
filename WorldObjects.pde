@@ -11,5 +11,15 @@ class TowerPart extends Polygon {
     addPoint(position.x, position.y + h);
     addPoint(position.x, position.y);
     recalc();
+    setPosition(position);
+  }
+
+  void update() {
+    super.update();
+  }
+
+  void draw() {
+    setColor(0);
+    super.draw();
   }
 }

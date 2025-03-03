@@ -142,7 +142,7 @@ class Projectile extends Polygon {
     if (inCatapult) {
 
       distance = sqrt(sq(anchorY - y)+sq(anchorX - x));
-      launchScale = 5;
+      launchScale = 7;
       initX = x;
       initY = y;
       projVelocity.x = cos(launchAngle) *  distance * launchScale;
@@ -170,7 +170,7 @@ class Projectile extends Polygon {
       if (!Mouse.isDown(Mouse.LEFT) && isHolding) {
 
         distance = sqrt(sq(anchorY - y)+sq(anchorX - x));
-        launchScale = 5;
+        launchScale = 7;
 
 
         velocity.x = cos(launchAngle) *  distance * launchScale;
