@@ -140,9 +140,11 @@ class Projectile extends Polygon {
 
     if (x > width) {
       velocity.x = -bouncyness;
+      bounceAmount--;
       BounceProj();
     } else if (x < 0) {
       velocity.x = bouncyness;
+      bounceAmount--;
       BounceProj();
     }
 
@@ -255,7 +257,15 @@ class Projectile extends Polygon {
       drawTrajectory(trajectoryPoints);
       fill(0);
       text("X Velocity: " + round(velocity.x) + " M/s", x, y - 100);
-      text("Y Velocity: " + round(projVelocity.y * -1) + " M/s", x, y - 80);
+      if(velocity.y * -1 > 0){
+      text("Y Velocity: " + round(velocity.y * -1) + " M/s", x, y - 80);
+      }else if( velocity.y * -1 < -25){
+      text("Y Velocity: " + round(velocity.y * -1) + " M/s", x, y - 80);
+      }else if(velocity.y *-1 > -25 &&velocity.y * -1 < 0){
+      
+      text("Y Velocity: 0 M/s", x, y - 80);
+      }
+      
     } else if (inCatapult && isHolding) {
       drawTrajectory(trajectoryPoints);
       fill(0);
